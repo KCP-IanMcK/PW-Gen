@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>PW-Gen</title>
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="flex-container">
+
+<main class="flex-container">
+
+    <form class="flex-container relative-container">
+        <label for="master">Master-Password</label>
+        <input id="master" type="password" autofocus>
+
+        <label for="url">Website</label>
+        <input id="url" type="text" placeholder="e.g. microsoft.com">
+
+        <button id="btn1">Get Password</button>
+
+        <label for="password">Website-Password</label>
+        <input id="password" type="password" readonly>
+        <button id="btn2" class="btn">Show</button>
+    </form>
+
+    <div id="banner" class="banner hidden">
+    </div>
+
+</main>
+
+</body>
+</html>
