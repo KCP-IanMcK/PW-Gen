@@ -3,6 +3,8 @@ const websiteInput = document.getElementById("url");
 const submitBtn = document.getElementById("btn1");
 const toggleBtn = document.getElementById("btn2");
 
+const specialChars = ['?', '!', '*', '+', '&', '=', '/', '@', '#', '$', '<', '>', '(', ')', '-', '_', '.', '%'];
+
 masterInput.addEventListener("submit", handleEvent);
 websiteInput.addEventListener("submit", handleEvent);
 submitBtn.addEventListener("click", handleEvent);
@@ -11,11 +13,11 @@ toggleBtn.addEventListener("click", function(event) {
     event.preventDefault();
     const hashField = document.getElementById("password");
     if (hashField.type === "password") {
-    toggleBtn.innerText = "Hide";
-    hashField.type = "text";
+        toggleBtn.innerText = "Hide";
+        hashField.type = "text";
     } else {
-    toggleBtn.innerText = "Show";
-    hashField.type = "password";
+        toggleBtn.innerText = "Show";
+        hashField.type = "password";
     }
 });
 
@@ -62,10 +64,10 @@ function getWebsiteURL() {
         hostUrl = hostUrl.replace("www.", "");
         hostUrl = hostUrl.toLowerCase();
        return hostUrl;
-      } catch (error) {
+    } catch (error) {
         value = value.toLowerCase();
         return value;
-      }
+    }
 }
 
 async function getPasswordHash(pwUrlCombination) {
@@ -73,36 +75,37 @@ async function getPasswordHash(pwUrlCombination) {
     const data = encoder.encode(pwUrlCombination);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const specialCharPos = hashArray[0] % 16;
-    let lowerCaseCharPos = hashArray[1] % 16;
-    let upperCaseCharPos = hashArray[2] % 16;
+    const specialCharPos = hashArray[0] % 24;
+    let lowerCaseCharPos = hashArray[1] % 24;
+    let upperCaseCharPos = hashArray[2] % 24;
     let numberCharPos = hashArray[3] % 16;
+    const specialChar = specialChars[hashArray[15] % 18];
 
     let hashText = btoa(String.fromCharCode(...hashArray));
-    hashText = hashText.slice(0, 16);
+    hashText = hashText.slice(0, 24);
 
-    while (!/[+=\/!]/.test(hashText) || !/[a-z]/.test(hashText) || !/[A-Z]/.test(hashText) || !/[0-9]/.test(hashText)) {
+    while (!/[+=\/!?*&@#$<>()_.%-]/.test(hashText) || !/[a-z]/.test(hashText) || !/[A-Z]/.test(hashText) || !/[0-9]/.test(hashText)) {
         if (!/[+=\/!]/.test(hashText)) {
-            hashText = replaceAt(hashText, specialCharPos , "!");
+            hashText = replaceAt(hashText, specialCharPos , specialChar);
         }
 
         if (!/[a-z]/.test(hashText)) {
             if(lowerCaseCharPos === specialCharPos) {
-                lowerCaseCharPos = lowerCaseCharPos == 15 ? 0 : lowerCaseCharPos + 1;
+                lowerCaseCharPos = lowerCaseCharPos === 23 ? 0 : lowerCaseCharPos + 1;
             }
             hashText = replaceAt(hashText, lowerCaseCharPos , "a");
         }
 
         if (!/[A-Z]/.test(hashText)) {
             if(upperCaseCharPos === lowerCaseCharPos || upperCaseCharPos === specialCharPos) {
-                upperCaseCharPos = upperCaseCharPos == 15 ? 0 : upperCaseCharPos + 1;
+                upperCaseCharPos = upperCaseCharPos === 23 ? 0 : upperCaseCharPos + 1;
             }
             hashText = replaceAt(hashText, upperCaseCharPos , "A");
         }
 
         if (!/[0-9]/.test(hashText)) {
              if(numberCharPos === lowerCaseCharPos || numberCharPos === specialCharPos || numberCharPos === upperCaseCharPos) {
-                numberCharPos = numberCharPos == 15 ? 0 : numberCharPos + 1;
+                numberCharPos = numberCharPos === 23 ? 0 : numberCharPos + 1;
              }
              hashText = replaceAt(hashText, numberCharPos , "1");
         }
