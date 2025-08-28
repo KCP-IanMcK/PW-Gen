@@ -87,7 +87,7 @@ async function getPasswordHash(pwUrlCombination) {
     hashText = hashText.slice(0, passwordLength);
 
     while (!/[+=\/!?*&@#$<>()_.%-]/.test(hashText) || !/[a-z]/.test(hashText) || !/[A-Z]/.test(hashText) || !/[0-9]/.test(hashText)) {
-        if (!/[+=\/!]/.test(hashText)) {
+        if (!/[+=\/!?*&@#$<>()_.%-]/.test(hashText)) {
             hashText = replaceAt(hashText, specialCharPos , specialChar);
         }
 
