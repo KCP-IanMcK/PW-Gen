@@ -64,6 +64,8 @@ function getWebsiteURL() {
         const urlObj = new URL(value);
         let hostUrl = urlObj.hostname;
         hostUrl = hostUrl.replace("www.", "");
+        hostUrl = hostUrl.replace("https://.", "");
+        hostUrl = hostUrl.replace("http://.", "");
         hostUrl = hostUrl.toLowerCase();
        return hostUrl;
     } catch (error) {
