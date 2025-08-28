@@ -59,19 +59,16 @@ function getMasterPW() {
 
 function getWebsiteURL() {
     let value = websiteInput.value;
+    const regex = /\bwww\./;
 
-    try {
-        const urlObj = new URL(value);
-        let hostUrl = urlObj.hostname;
-        hostUrl = hostUrl.replace("www.", "");
-        hostUrl = hostUrl.replace("https://.", "");
-        hostUrl = hostUrl.replace("http://.", "");
-        hostUrl = hostUrl.toLowerCase();
-       return hostUrl;
-    } catch (error) {
-        value = value.toLowerCase();
-        return value;
+    if (regex.test(value)) {
+       hostUrl = value.split(".")[1];
+    } else {
+       hostUrl = value.split(".")[0];
     }
+
+    hostUrl = hostUrl.toLowerCase();
+    return hostUrl;
 }
 
 async function getPasswordHash(pwUrlCombination) {
